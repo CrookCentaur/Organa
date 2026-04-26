@@ -84,16 +84,14 @@ export default function ImageCapture({ onIdentify, isLoading }: ImageCaptureProp
   if (isLoading) {
     return (
       <div className={styles.loadingState}>
-        <div className={styles.loadingLeaf}>
-          <IconLeaf size={48} />
+        <div className={styles.loaderContainer}>
+          <div className={styles.loaderRing}></div>
+          <div className={styles.loadingLeaf}>
+            <IconLeaf size={48} />
+          </div>
         </div>
         <p className={styles.loadingText}>Analyzing organism...</p>
         <p className={styles.loadingSubtext}>Our AI is identifying the species</p>
-        <div className={styles.loadingDots}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
       </div>
     );
   }

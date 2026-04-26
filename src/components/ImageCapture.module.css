@@ -212,44 +212,53 @@
   animation: fadeIn 0.3s ease;
 }
 
+.loaderContainer {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
+
+.loaderRing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--green-100);
+  border-top-color: var(--green-600);
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
 .loadingLeaf {
-  width: 60px;
-  height: 60px;
-  animation: spin 2s linear infinite;
-  opacity: 0.8;
+  color: var(--green-600);
+  display: flex;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
 }
 
 .loadingText {
   font-family: var(--font-serif);
-  font-size: 1.3rem;
-  color: var(--text-secondary);
+  font-size: 1.5rem;
+  color: var(--green-800);
+  margin-bottom: var(--space-2);
 }
 
 .loadingSubtext {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-top: calc(-1 * var(--space-4));
-}
-
-.loadingDots {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.loadingDots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--green-400);
-  animation: pulse 1.4s ease-in-out infinite;
-}
-
-.loadingDots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loadingDots span:nth-child(3) {
-  animation-delay: 0.4s;
+  font-size: 0.95rem;
+  margin-top: 0;
 }
 
 .error {
