@@ -1,49 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+/* ========================================
+   ORGANA TAXONOMY — Design System
+   Color palette derived from the Organa logo:
+   Deep forest greens, layered leaf gradients,
+   warm parchment backgrounds
+   ======================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Greens — from the logo leaf/text */
+  --green-950: #0A1F12;
+  --green-900: #0D2818;
+  --green-800: #1A4D2E;
+  --green-700: #1B5E3B;
+  --green-600: #2D8B4E;
+  --green-500: #3DA35D;
+  --green-400: #5DBB63;
+  --green-300: #8FD694;
+  --green-200: #B5E8B5;
+  --green-100: #DFFADF;
+  --green-50: #F0FFF0;
+
+  /* Accent — from the leaf top gradient */
+  --lime-500: #8BC34A;
+  --lime-400: #9CCC65;
+  --lime-300: #C5E1A5;
+  --yellow-green: #C8D94A;
+
+  /* Warm Backgrounds — perfectly matched to logo parchment */
+  --cream-50: #F7F5EE;
+  --cream-100: #F2EEE4;
+  --cream-200: #EBE6D8;
+  --cream-300: #E0D9C6;
+  --cream-400: #D1C9B5;
+
+  /* Text */
+  --text-primary: #1A2E1A;
+  --text-secondary: #3E5A3E;
+  --text-muted: #6B7F6B;
+  --text-light: #94A794;
+  --text-on-dark: #F0FFF0;
+
+  /* Semantic Colors */
+  --bg-primary: var(--cream-50);
+  --bg-secondary: var(--cream-100);
+  --bg-card: #FFFFFF;
+  --border-light: rgba(27, 94, 59, 0.08);
+  --border-medium: rgba(27, 94, 59, 0.15);
+  --border-strong: rgba(27, 94, 59, 0.25);
+
+  /* Organism Type Colors */
+  --color-plant: #2D8B4E;
+  --color-animal: #C17A2F;
+  --color-insect: #9C6ADE;
+  --color-bird: #3A8FD6;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(13, 40, 24, 0.04);
+  --shadow-sm: 0 1px 3px rgba(13, 40, 24, 0.06), 0 1px 2px rgba(13, 40, 24, 0.04);
+  --shadow-md: 0 4px 12px rgba(13, 40, 24, 0.08);
+  --shadow-lg: 0 8px 30px rgba(13, 40, 24, 0.10);
+  --shadow-xl: 0 20px 50px rgba(13, 40, 24, 0.14);
+  --shadow-glow: 0 0 30px rgba(61, 163, 93, 0.15);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 150ms var(--ease-out);
+  --transition-base: 300ms var(--ease-out);
+  --transition-slow: 500ms var(--ease-out);
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Layout */
+  --max-width: 1200px;
+  --nav-height: 72px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 a {
-  color: inherit;
+  color: var(--green-700);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+a:hover {
+  color: var(--green-500);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 100%);
+  color: white;
+  box-shadow: var(--shadow-md), 0 0 0 0 rgba(45, 139, 78, 0);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(45, 139, 78, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--green-700);
+  border: 1.5px solid var(--border-medium);
+}
+
+.btn-secondary:hover {
+  border-color: var(--green-600);
+  background: var(--green-50);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: 1.05rem;
+}
+
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.85rem;
+}
+
+/* ========================================
+   TYPE BADGES
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-plant {
+  background: rgba(45, 139, 78, 0.1);
+  color: var(--color-plant);
+}
+
+.badge-animal {
+  background: rgba(193, 122, 47, 0.1);
+  color: var(--color-animal);
+}
+
+.badge-insect {
+  background: rgba(156, 106, 222, 0.1);
+  color: var(--color-insect);
+}
+
+.badge-bird {
+  background: rgba(58, 143, 214, 0.1);
+  color: var(--color-bird);
+}
+
+/* ========================================
+   CARD BASE
+   ======================================== */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes leafFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+  75% {
+    transform: translateY(4px) rotate(-2deg);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s var(--ease-out) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s var(--ease-out) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s var(--ease-out) forwards;
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream-200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--green-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-400);
+}
+
+/* ========================================
+   SELECTION STYLING
+   ======================================== */
+
+::selection {
+  background: rgba(45, 139, 78, 0.2);
+  color: var(--green-900);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 64px;
+  }
+
+  .container {
+    padding: 0 var(--space-4);
   }
 }
