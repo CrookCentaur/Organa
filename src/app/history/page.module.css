@@ -20,8 +20,10 @@
 .headerLeft {}
 
 .title {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   margin-bottom: var(--space-1);
 }
 

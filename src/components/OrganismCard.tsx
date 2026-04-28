@@ -9,7 +9,7 @@ import {
   IconHome, IconHeart, IconClock, IconGlobe,
   IconPin, IconLightbulb, IconBookmark, IconCamera,
   IconCheckCircle, IconDocument, IconRefresh, IconSliders,
-  IconSearch,
+  IconSearch, IconClose, IconWarning, IconTrash,
 } from './Icons';
 import styles from './OrganismCard.module.css';
 
@@ -19,6 +19,7 @@ interface OrganismCardProps {
   compact?: boolean;
   onNewScan?: () => void;
   onClick?: () => void;
+  onDelete?: (id: string) => void;
 }
 
 const TYPE_ICONS: Record<OrganismType, React.ReactNode> = {
@@ -26,6 +27,7 @@ const TYPE_ICONS: Record<OrganismType, React.ReactNode> = {
   animal: <IconPaw size={14} />,
   insect: <IconButterfly size={14} />,
   bird: <IconBird size={14} />,
+  inanimate: <IconWarning size={14} />,
 };
 
 const CARE_LABELS: Record<string, { icon: React.ReactNode; label: string }> = {
@@ -60,6 +62,8 @@ const CARE_LABELS: Record<string, { icon: React.ReactNode; label: string }> = {
   conservationStatus: { icon: <IconShield size={16} />, label: 'Conservation Status' },
   howToAttract: { icon: <IconLeaf size={16} />, label: 'How to Attract' },
   regionalPresence: { icon: <IconPin size={16} />, label: 'Regional Presence' },
+  // Inanimate
+  notice: { icon: <IconWarning size={16} />, label: 'Notice' },
 };
 export default function OrganismCard({
   result,
@@ -67,9 +71,11 @@ export default function OrganismCard({
   compact = false,
   onNewScan,
   onClick,
+  onDelete,
 }: OrganismCardProps) {
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'essentials'>('all');
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const careEntries = Object.entries(result.careInfo || {});
   const essentialKeys = careEntries.slice(0, 4);
@@ -95,97 +101,162 @@ export default function OrganismCard({
       {/* Header */}
       <div className={styles.cardHeader}>
         {(imageData || result.imageData) && (
+          <div
+            className={styles.thumbWrapper}
+            onClick={() => setShowImageModal(true)}
+            role="button"
+            aria-label="Enlarge image"
+            title="Click to enlarge"
+          >
+            <img
+              src={imageData || result.imageData}
+              alt={result.commonName}
+              className={styles.cardThumb}
+            />
+            <div className={styles.thumbOverlay}>
+              <IconSearch size={20} />
+            </div>
+          </div>
+        )}
+        <div className={styles.cardInfo}>
+          <div className={styles.cardHeaderRow}>
+            <div className={styles.cardNameRow}>
+              <h2 className={styles.commonName}>
+                {result.type === 'inanimate'
+                  ? "Not an organism!"
+                  : result.commonName}
+              </h2>
+              {result.type !== 'inanimate' && (
+                <p className={styles.scientificName}>{result.scientificName}</p>
+              )}
+            </div>
+          </div>
+          
+          <div className={styles.cardMeta}>
+            <span className={badgeClass}>
+              {TYPE_ICONS[result.type] || <IconLeaf size={14} />}
+              {result.type.toUpperCase()}
+            </span>
+            {!compact && (
+              <div className={styles.confidence}>
+                <div className={styles.confidenceBar}>
+                  <div
+                    className={styles.confidenceFill}
+                    style={{ width: `${(result.confidence || 0) * 100}%` }}
+                  />
+                </div>
+                <span className={styles.confidenceText}>
+                  {Math.round((result.confidence || 0) * 100)}% confident
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {!compact && (
+        <>
+          {/* Summary */}
+          <div className={styles.summary}>{result.summary}</div>
+
+          {/* Fun Fact */}
+          {result.funFact && (
+            <div className={styles.funFact}>
+              <span className={styles.funFactIcon}><IconLightbulb size={20} /></span>
+              <p>
+                <span className={styles.funFactLabel}>Did you know?</span>
+                {result.funFact}
+              </p>
+            </div>
+          )}
+
+          {/* Tabs */}
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === 'all' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('all')}
+            >
+              All Care Info
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'essentials' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('essentials')}
+            >
+              Essentials
+            </button>
+          </div>
+
+          {/* Care Grid */}
+          <div className={styles.careGrid}>
+            {displayEntries.map(([key, value]) => {
+              const meta = CARE_LABELS[key] || { icon: <IconDocument size={16} />, label: key };
+              return (
+                <div key={key} className={styles.careItem}>
+                  <div className={styles.careLabel}>
+                    {meta.icon}
+                    {meta.label}
+                  </div>
+                  <div className={styles.careValue}>{value as string}</div>
+                </div>
+              );
+            })}
+          </div>
+          {/* Actions */}
+          <div className={styles.cardActions}>
+            <div className={styles.mainActions}>
+              {saved ? (
+                <span className={styles.savedBtn}>
+                  <IconCheckCircle size={16} /> Saved to History
+                </span>
+              ) : (
+                <button onClick={handleSave} className={styles.saveBtn} id="save-to-history-btn">
+                  <IconBookmark size={16} /> Save to History
+                </button>
+              )}
+              {onNewScan && (
+                <button onClick={onNewScan} className={styles.newScanBtn} id="new-scan-btn">
+                  <IconCamera size={16} /> New Scan
+                </button>
+              )}
+            </div>
+            {onDelete && (
+              <button 
+                className={styles.removeBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(result.id);
+                }}
+              >
+                <IconTrash size={14} /> Remove
+              </button>
+            )}
+          </div>
+        </>
+      )}
+
+
+
+      {/* Image Modal / Lightbox */}
+      {showImageModal && (imageData || result.imageData) && (
+        <div
+          className={styles.imageModal}
+          onClick={() => setShowImageModal(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            className={styles.closeModal}
+            onClick={() => setShowImageModal(false)}
+            aria-label="Close image"
+          >
+            <IconClose size={24} />
+          </button>
           <img
             src={imageData || result.imageData}
             alt={result.commonName}
-            className={styles.cardThumb}
+            className={styles.fullImage}
+            onClick={(e) => e.stopPropagation()}
           />
-        )}
-        <div className={styles.cardInfo}>
-          <div className={styles.cardNameRow}>
-            <h2 className={styles.commonName}>{result.commonName}</h2>
-            <span className={badgeClass}>
-              {TYPE_ICONS[result.type]} {result.type}
-            </span>
-          </div>
-          <p className={styles.scientificName}>{result.scientificName}</p>
-          <div className={styles.confidence}>
-            <div className={styles.confidenceBar}>
-              <div
-                className={styles.confidenceFill}
-                style={{ width: `${(result.confidence || 0) * 100}%` }}
-              />
-            </div>
-            <span className={styles.confidenceText}>
-              {Math.round((result.confidence || 0) * 100)}% confident
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Summary */}
-      <div className={styles.summary}>{result.summary}</div>
-
-      {/* Fun Fact */}
-      {result.funFact && (
-        <div className={styles.funFact}>
-          <span className={styles.funFactIcon}><IconLightbulb size={20} /></span>
-          <p>
-            <span className={styles.funFactLabel}>Did you know?</span>
-            {result.funFact}
-          </p>
-        </div>
-      )}
-
-      {/* Tabs */}
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tab} ${activeTab === 'all' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('all')}
-        >
-          All Care Info
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'essentials' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('essentials')}
-        >
-          Essentials
-        </button>
-      </div>
-
-      {/* Care Grid */}
-      <div className={styles.careGrid}>
-        {displayEntries.map(([key, value]) => {
-          const meta = CARE_LABELS[key] || { icon: <IconDocument size={16} />, label: key };
-          return (
-            <div key={key} className={styles.careItem}>
-              <div className={styles.careLabel}>
-                {meta.icon}
-                {meta.label}
-              </div>
-              <div className={styles.careValue}>{value as string}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Actions */}
-      {!compact && (
-        <div className={styles.cardActions}>
-          {saved ? (
-            <span className={styles.savedBtn}>
-              <IconCheckCircle size={16} /> Saved to History
-            </span>
-          ) : (
-            <button onClick={handleSave} className={styles.saveBtn} id="save-to-history-btn">
-              <IconBookmark size={16} /> Save to History
-            </button>
-          )}
-          {onNewScan && (
-            <button onClick={onNewScan} className={styles.newScanBtn} id="new-scan-btn">
-              <IconCamera size={16} /> New Scan
-            </button>
-          )}
         </div>
       )}
     </div>

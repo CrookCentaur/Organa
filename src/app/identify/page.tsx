@@ -4,14 +4,14 @@ import { useState, useCallback } from 'react';
 import ImageCapture from '@/components/ImageCapture';
 import OrganismCard from '@/components/OrganismCard';
 import { OrganismResult } from '@/types';
-import { IconSearch, IconCheckCircle, IconWarning } from '@/components/Icons';
+import { IconSearch, IconCheckCircle, IconWarning, IconRefresh } from '@/components/Icons';
 import styles from './page.module.css';
 
 export default function IdentifyPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<OrganismResult | null>(null);
-  const [imageData, setImageData] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [imageData, setImageData] = useState<string>('');
 
   const handleIdentify = useCallback(async (image: string, mimeType: string) => {
     setIsLoading(true);
@@ -80,24 +80,16 @@ export default function IdentifyPage() {
         )}
 
         {error && !isLoading && (
-          <div
-            style={{
-              padding: 'var(--space-4) var(--space-5)',
-              borderRadius: 'var(--radius-md)',
-              background: 'rgba(200, 50, 50, 0.06)',
-              border: '1px solid rgba(200, 50, 50, 0.15)',
-              color: '#8B2020',
-              fontSize: '0.9rem',
-              marginTop: 'var(--space-4)',
-              textAlign: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 'var(--space-2)'
-            }}
-            role="alert"
-          >
-            <IconWarning size={18} /> {error}
+          <div className={styles.errorContainer} role="alert">
+            <div className={styles.errorMessage}>
+              <IconWarning size={18} /> {error}
+            </div>
+            <button 
+              className={styles.tryAgainBtn}
+              onClick={() => setError(null)}
+            >
+              <IconRefresh size={14} /> Try Again
+            </button>
           </div>
         )}
 

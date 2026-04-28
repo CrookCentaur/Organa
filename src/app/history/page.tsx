@@ -124,6 +124,7 @@ export default function HistoryPage() {
                   result={item}
                   compact
                   onClick={() => setSelected(item)}
+                  onDelete={handleDelete}
                 />
               </div>
             ))}
@@ -167,14 +168,10 @@ export default function HistoryPage() {
             <IconClose size={20} />
           </button>
           <div className={styles.modalContent}>
-            <OrganismCard result={selected} />
-            <button
-              onClick={() => handleDelete(selected.id)}
-              className={styles.deleteBtn}
-              id="delete-entry-btn"
-            >
-              <IconTrash size={14} /> Remove from History
-            </button>
+            <OrganismCard 
+              result={selected} 
+              onDelete={handleDelete}
+            />
           </div>
         </div>
       )}

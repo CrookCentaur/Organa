@@ -39,9 +39,10 @@
 }
 
 .heroTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   line-height: 1.1;
   color: var(--text-primary);
   margin-bottom: var(--space-5);
@@ -96,9 +97,11 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: clamp(1.8rem, 4vw, 2.4rem);
   text-align: center;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   margin-bottom: var(--space-3);
   color: var(--text-primary);
 }
@@ -169,8 +172,10 @@
 }
 
 .stepTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: 1.3rem;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   margin-bottom: var(--space-2);
 }
 
@@ -216,8 +221,10 @@
 }
 
 .typeTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: 1.3rem;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   margin-bottom: var(--space-2);
 }
 
@@ -284,8 +291,10 @@
 }
 
 .audienceTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-header);
   font-size: 1.4rem;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 100;
   color: white;
   margin-bottom: var(--space-2);
 }

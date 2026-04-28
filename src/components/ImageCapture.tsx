@@ -199,8 +199,10 @@ export default function ImageCapture({ onIdentify, isLoading }: ImageCaptureProp
       )}
 
       {error && (
-        <div className={styles.error} role="alert">
-          <IconWarning size={18} /> {error}
+        <div className={styles.errorContainer} role="alert">
+          <div className={styles.errorMessage}>
+            <IconWarning size={18} /> {error}
+          </div>
         </div>
       )}
     </div>

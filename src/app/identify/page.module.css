@@ -1,9 +1,9 @@
 .page {
-  padding: var(--space-10) 0 var(--space-16);
+  padding: var(--space-6) 0 var(--space-12);
 }
 
 .inner {
-  max-width: 680px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 var(--space-6);
 }
@@ -15,8 +15,8 @@
 
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  margin-bottom: var(--space-2);
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin-bottom: var(--space-1);
 }
 
 .subtitle {
@@ -26,4 +26,47 @@
 
 .resultSection {
   margin-top: var(--space-8);
+}
+
+.errorContainer {
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: rgba(200, 50, 50, 0.04);
+  border: 1px solid rgba(200, 50, 50, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  animation: fadeIn 0.3s ease;
+}
+
+.errorMessage {
+  color: #8B2020;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.tryAgainBtn {
+  composes: btn from global;
+  background: white;
+  color: var(--green-700);
+  border: 1.5px solid var(--border-medium);
+  padding: var(--space-2) var(--space-5);
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.tryAgainBtn:hover {
+  background: var(--green-50);
+  border-color: var(--green-600);
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

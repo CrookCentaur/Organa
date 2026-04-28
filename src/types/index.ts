@@ -1,4 +1,4 @@
-export type OrganismType = 'plant' | 'animal' | 'insect' | 'bird';
+export type OrganismType = 'plant' | 'animal' | 'insect' | 'bird' | 'inanimate';
 
 export interface PlantCareInfo {
   watering: string;
@@ -40,7 +40,11 @@ export interface BirdCareInfo {
   regionalPresence: string;
 }
 
-export type CareInfo = PlantCareInfo | AnimalCareInfo | InsectCareInfo | BirdCareInfo;
+export interface InanimateCareInfo {
+  notice?: string;
+}
+
+export type CareInfo = PlantCareInfo | AnimalCareInfo | InsectCareInfo | BirdCareInfo | InanimateCareInfo;
 
 export interface OrganismResult {
   id: string;

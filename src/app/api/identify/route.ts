@@ -39,9 +39,9 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('DEBUG: FULL ERROR FROM GEMINI API:', error);
     
-    // Return the actual error message to the UI so we can see it
+    // Return a generic error message to the UI
     return NextResponse.json(
-      { error: error.message || 'Failed to identify organism.' },
+      { error: "Couldn't identify organism. Please try again." },
       { status: 500 }
     );
   }
