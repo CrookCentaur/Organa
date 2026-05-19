@@ -298,3 +298,14 @@ export function IconGlobe({ size = 24, className }: IconProps) {
     </svg>
   );
 }
+
+export function IconMushroom({ size = 24, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M4 13C4 8.58 7.58 5 12 5C16.42 5 20 8.58 20 13H4Z" stroke={D} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M8 13C8 10.79 9.79 9 12 9C14.21 9 16 10.79 16 13" stroke={A} strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="10" y="13" width="4" height="7" rx="1" stroke={D} strokeWidth="2" />
+      <line x1="12" y1="15" x2="12" y2="18" stroke={A} strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}

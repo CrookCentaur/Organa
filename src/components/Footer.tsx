@@ -7,12 +7,12 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.brand}>
           <div className={styles.logo}>
-            <Image 
-              src="/leaf.png" 
-              alt="Organa" 
-              width={24} 
-              height={24} 
-              className={styles.footerLogoIcon} 
+            <Image
+              src="/leaf.png"
+              alt="Organa"
+              width={24}
+              height={24}
+              className={styles.footerLogoIcon}
             />
             <span>Organa</span>
           </div>
@@ -24,6 +24,9 @@ export default function Footer() {
         <div className={styles.bottom}>
           <span className={styles.copyright}>
             © {new Date().getFullYear()} Organa Taxonomy
+          </span>
+          <span className={styles.author}>
+            Created by <a href="https://github.com/CrookCentaur">Soham Mulye</a>
           </span>
           <span className={styles.powered}>
             Powered by Google Gemini AI

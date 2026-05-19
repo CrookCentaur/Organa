@@ -9,7 +9,7 @@ import {
   IconHome, IconHeart, IconClock, IconGlobe,
   IconPin, IconLightbulb, IconBookmark, IconCamera,
   IconCheckCircle, IconDocument, IconRefresh, IconSliders,
-  IconSearch, IconClose, IconWarning, IconTrash,
+  IconSearch, IconClose, IconWarning, IconTrash, IconMushroom,
 } from './Icons';
 import styles from './OrganismCard.module.css';
 
@@ -27,6 +27,7 @@ const TYPE_ICONS: Record<OrganismType, React.ReactNode> = {
   animal: <IconPaw size={14} />,
   insect: <IconButterfly size={14} />,
   bird: <IconBird size={14} />,
+  fungi: <IconMushroom size={14} />,
   inanimate: <IconWarning size={14} />,
 };
 
@@ -62,9 +63,48 @@ const CARE_LABELS: Record<string, { icon: React.ReactNode; label: string }> = {
   conservationStatus: { icon: <IconShield size={16} />, label: 'Conservation Status' },
   howToAttract: { icon: <IconLeaf size={16} />, label: 'How to Attract' },
   regionalPresence: { icon: <IconPin size={16} />, label: 'Regional Presence' },
+  // Fungi
+  toxicity: { icon: <IconWarning size={16} />, label: 'Toxicity' },
+  forageable: { icon: <IconCheckCircle size={16} />, label: 'Forageable' },
+  season: { icon: <IconClock size={16} />, label: 'Season' },
+  lookalikes: { icon: <IconSearch size={16} />, label: 'Lookalikes' },
+  preparation: { icon: <IconSliders size={16} />, label: 'Preparation' },
+  ecologicalRole: { icon: <IconGlobe size={16} />, label: 'Ecological Role' },
   // Inanimate
   notice: { icon: <IconWarning size={16} />, label: 'Notice' },
 };
+
+const FUNGI_LEVELS = [
+  { level: 1, name: 'Highly Toxic', emoji: '😵', color: '#e15c5c' },
+  { level: 2, name: 'Avoid', emoji: '🙁', color: '#f48c36' },
+  { level: 3, name: 'Caution', emoji: '😐', color: '#f4cc36' },
+  { level: 4, name: 'Low Risk', emoji: '🙂', color: '#9cd85c' },
+  { level: 5, name: 'Safe Choice', emoji: '😊', color: '#5cb85c' },
+];
+
+const getSafetyProfile = (toxicity: string = '', forageable: string = '') => {
+  const tox = toxicity.toLowerCase();
+  const forage = forageable.toLowerCase();
+
+  if (tox.includes('high')) {
+    return { level: 1, color: '#e15c5c', label: 'High (Dangerously Toxic)', emoji: '😵' };
+  }
+  if (tox.includes('medium')) {
+    if (forage.includes('no')) {
+      return { level: 2, color: '#f48c36', label: 'Medium (Toxic - Avoid)', emoji: '🙁' };
+    } else {
+      return { level: 3, color: '#f4cc36', label: 'Medium (Caution / Special Prep)', emoji: '😐' };
+    }
+  }
+  if (tox.includes('low') || forage.includes('yes')) {
+    if (tox.includes('low') && forage.includes('yes')) {
+      return { level: 5, color: '#5cb85c', label: 'Safe / Choice Edible', emoji: '😊' };
+    }
+    return { level: 4, color: '#9cd85c', label: 'Low Risk / Edible', emoji: '🙂' };
+  }
+  return { level: 3, color: '#f4cc36', label: 'Medium (Caution)', emoji: '😐' };
+};
+
 export default function OrganismCard({
   result,
   imageData,
@@ -77,7 +117,18 @@ export default function OrganismCard({
   const [activeTab, setActiveTab] = useState<'all' | 'essentials'>('all');
   const [showImageModal, setShowImageModal] = useState(false);
 
-  const careEntries = Object.entries(result.careInfo || {});
+  const isFungi = result.type === 'fungi';
+  const fungiCareInfo = isFungi ? (result.careInfo as any) : null;
+  const safetyProfile = isFungi && fungiCareInfo ? getSafetyProfile(fungiCareInfo.toxicity, fungiCareInfo.forageable) : null;
+
+  // Filter out toxicity and forageable from standard care grid if it is Fungi
+  const careEntries = Object.entries(result.careInfo || {}).filter(([key]) => {
+    if (isFungi && (key === 'toxicity' || key === 'forageable')) {
+      return false;
+    }
+    return true;
+  });
+
   const essentialKeys = careEntries.slice(0, 4);
   const displayEntries = activeTab === 'essentials' ? essentialKeys : careEntries;
 
@@ -167,6 +218,63 @@ export default function OrganismCard({
                 <span className={styles.funFactLabel}>Did you know?</span>
                 {result.funFact}
               </p>
+            </div>
+          )}
+
+          {/* Fungi Toxicity & Foraging Safety Profile */}
+          {isFungi && safetyProfile && fungiCareInfo && (
+            <div className={styles.fungiProfile}>
+              <h3 className={styles.fungiProfileTitle}>
+                <IconMushroom size={18} /> Safety & Foraging Profile
+              </h3>
+              
+              {/* Emojis matching 5 levels */}
+              <div className={styles.emojiRow}>
+                {FUNGI_LEVELS.map((levelObj) => {
+                  const isActive = levelObj.level === safetyProfile.level;
+                  return (
+                    <div 
+                      key={levelObj.level} 
+                      className={`${styles.emojiCol} ${isActive ? styles.emojiColActive : ''}`}
+                      style={{ '--accent-color': levelObj.color } as any}
+                    >
+                      <span className={styles.emojiFace}>{levelObj.emoji}</span>
+                      <span className={styles.emojiLabel}>{levelObj.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Gradient Progress Bar */}
+              <div className={styles.meterContainer}>
+                <span className={styles.meterSignMinus}>−</span>
+                <div className={styles.meterTrack}>
+                  <div 
+                    className={styles.meterPin} 
+                    style={{ 
+                      left: `${(safetyProfile.level - 1) * 25}%`,
+                      backgroundColor: safetyProfile.color
+                    }} 
+                  />
+                </div>
+                <span className={styles.meterSignPlus}>+</span>
+              </div>
+
+              {/* Descriptions */}
+              <div className={styles.safetyInfo}>
+                <div className={styles.safetyBox}>
+                  <div className={styles.safetyHeader} style={{ color: safetyProfile.color }}>
+                    <IconWarning size={16} /> Toxicity: {safetyProfile.label}
+                  </div>
+                  <p className={styles.safetyText}>{fungiCareInfo.toxicity}</p>
+                </div>
+                <div className={styles.safetyBox}>
+                  <div className={styles.safetyHeader} style={{ color: fungiCareInfo.forageable.toLowerCase().includes('yes') ? 'var(--green-600)' : '#e15c5c' }}>
+                    <IconCheckCircle size={16} /> Foraging Status
+                  </div>
+                  <p className={styles.safetyText}>{fungiCareInfo.forageable}</p>
+                </div>
+              </div>
             </div>
           )}
 

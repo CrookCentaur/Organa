@@ -11,6 +11,7 @@ import {
   IconPaw, 
   IconButterfly, 
   IconBird, 
+  IconMushroom,
   IconSearch, 
   IconTrash, 
   IconClose 
@@ -20,6 +21,7 @@ import styles from './page.module.css';
 const FILTER_OPTIONS = [
   { key: 'all', label: 'All', icon: <IconGlobe size={16} />, count: 0 },
   { key: 'plant', label: 'Plants', icon: <IconLeaf size={16} />, count: 0 },
+  { key: 'fungi', label: 'Fungi', icon: <IconMushroom size={16} />, count: 0 },
   { key: 'animal', label: 'Animals', icon: <IconPaw size={16} />, count: 0 },
   { key: 'insect', label: 'Insects', icon: <IconButterfly size={16} />, count: 0 },
   { key: 'bird', label: 'Birds', icon: <IconBird size={16} />, count: 0 },

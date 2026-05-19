@@ -54,6 +54,7 @@
   --color-animal: #C17A2F;
   --color-insect: #9C6ADE;
   --color-bird: #3A8FD6;
+  --color-fungi: #A0522D;
   --color-inanimate: #7A7A7A;
 
   /* Shadows */
@@ -276,6 +277,11 @@ h1, h2, h3, h4, h5, h6 {
 .badge-bird {
   background: rgba(58, 143, 214, 0.1);
   color: var(--color-bird);
+}
+
+.badge-fungi {
+  background: rgba(160, 82, 45, 0.1);
+  color: var(--color-fungi);
 }
 
 .badge-inanimate {

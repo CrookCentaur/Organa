@@ -62,6 +62,11 @@
   opacity: 0.8;
 }
 
+.author {
+  opacity: 0.7;
+  font-weight: 500;
+}
+
 .powered {
   opacity: 0.6;
 }
