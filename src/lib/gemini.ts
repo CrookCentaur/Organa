@@ -112,7 +112,7 @@ For INANIMATE objects:
 `;
 
 export async function identifyOrganism(base64Image: string, mimeType: string) {
-  // Use gemini-1.5-flash for maximum compatibility and speed
+  // Use gemini-3-flash-preview for identification
   const model = genAI.getGenerativeModel({
     model: "gemini-3-flash-preview",
     generationConfig: {
@@ -141,10 +141,14 @@ export async function identifyOrganism(base64Image: string, mimeType: string) {
       const text = response.text();
 
       if (!text) {
-        throw new Error("No response from Gemini");
+        throw new Error("Sorry we couldn't identify this, please try again");
       }
 
-      return JSON.parse(text);
+      try {
+        return JSON.parse(text);
+      } catch {
+        throw new Error("Sorry we couldn't identify this, please try again");
+      }
     } catch (error: any) {
       attempts++;
       
@@ -153,7 +157,7 @@ export async function identifyOrganism(base64Image: string, mimeType: string) {
         console.warn(`Rate limit or busy error hit. Attempt ${attempts}/${maxAttempts}. Waiting ${3 * attempts}s...`);
         
         if (attempts >= maxAttempts) {
-          throw new Error("The AI is currently under heavy load. Please wait about 30 seconds before trying your next scan.");
+          throw new Error("Sorry we couldn't identify this, please try again");
         }
         
         // Wait with progressive delay
@@ -163,7 +167,7 @@ export async function identifyOrganism(base64Image: string, mimeType: string) {
 
       // Re-throw other errors
       console.error("Gemini API Error:", error);
-      throw error;
+      throw new Error("Sorry we couldn't identify this, please try again");
     }
   }
 }

@@ -13,17 +13,20 @@ export default function IdentifyPage() {
   const [error, setError] = useState<string | null>(null);
   const [imageData, setImageData] = useState<string>('');
 
-  const handleIdentify = useCallback(async (image: string, mimeType: string) => {
+  const handleIdentify = useCallback(async (file: File, previewUrl: string) => {
     setIsLoading(true);
     setError(null);
     setResult(null);
-    setImageData(image);
+    setImageData(previewUrl);
 
     try {
+      // Use FormData to send raw file bytes — no base64 in the POST body
+      const formData = new FormData();
+      formData.append('image', file);
+
       const response = await fetch('/api/identify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, mimeType }),
+        body: formData, // multipart/form-data — Safari handles this natively
       });
 
       const data = await response.json();
@@ -32,16 +35,13 @@ export default function IdentifyPage() {
         throw new Error(data.error || 'Identification failed');
       }
 
+      // Use the server-returned thumbnail for display/history persistence
       setResult({
         ...data,
-        imageData: image,
+        imageData: data.imageData || previewUrl,
       } as OrganismResult);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Something went wrong. Please try again.'
-      );
+      setError("Sorry we couldn't identify this, please try again");
     } finally {
       setIsLoading(false);
     }

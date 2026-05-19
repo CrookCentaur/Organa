@@ -3,11 +3,12 @@ import { identifyOrganism } from '@/lib/gemini';
 
 export async function POST(request: Request) {
   try {
-    const { image, mimeType } = await request.json();
+    const formData = await request.formData();
+    const file = formData.get('image') as File | null;
 
-    if (!image || !mimeType) {
+    if (!file) {
       return NextResponse.json(
-        { error: 'Image data and mimeType are required' },
+        { error: 'Image file is required' },
         { status: 400 }
       );
     }
@@ -20,8 +21,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Clean up the base64 string
-    const base64Data = image.split(',')[1] || image;
+    // Convert the raw file to base64 server-side (no client bottleneck)
+    const arrayBuffer = await file.arrayBuffer();
+    const base64Data = Buffer.from(arrayBuffer).toString('base64');
+    const mimeType = file.type || 'image/jpeg';
 
     console.log(`DEBUG: Sending image to Gemini (${mimeType}, length: ${base64Data.length})...`);
     
@@ -31,9 +34,13 @@ export async function POST(request: Request) {
 
     const id = `org_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
+    // Generate a small data URL thumbnail for history persistence
+    const thumbDataUrl = `data:${mimeType};base64,${base64Data}`;
+
     return NextResponse.json({
       ...result,
       id,
+      imageData: thumbDataUrl,
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
@@ -41,7 +48,7 @@ export async function POST(request: Request) {
     
     // Return a generic error message to the UI
     return NextResponse.json(
-      { error: "Couldn't identify organism. Please try again." },
+      { error: "Sorry we couldn't identify this, please try again" },
       { status: 500 }
     );
   }

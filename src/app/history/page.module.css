@@ -138,6 +138,30 @@
   overflow-y: auto;
   border-radius: var(--radius-xl);
   animation: fadeInUp 0.3s var(--ease-out);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.modalContent:hover {
+  scrollbar-color: var(--green-600) transparent;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.modalContent:hover::-webkit-scrollbar-thumb {
+  background: var(--green-600);
 }
 
 .modalClose {

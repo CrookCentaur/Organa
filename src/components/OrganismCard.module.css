@@ -1,26 +1,37 @@
-/* Custom Scrollbar */
+/* Custom Scrollbar - Hidden by default, shows on hover */
 .card ::-webkit-scrollbar {
   width: 6px;
 }
 .card ::-webkit-scrollbar-track {
-  background: rgba(27, 94, 59, 0.05);
-  border-radius: 10px;
+  background: transparent;
 }
 .card ::-webkit-scrollbar-thumb {
-  background: var(--green-600);
+  background: transparent;
   border-radius: 10px;
 }
+
+.card:hover ::-webkit-scrollbar-thumb {
+  background: var(--green-600);
+}
+
 .card ::-webkit-scrollbar-thumb:hover {
   background: var(--green-700);
 }
 
 .card {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
   overflow: hidden;
   animation: fadeInUp 0.6s var(--ease-out);
   box-shadow: var(--shadow-md);
+}
+
+.card:hover {
+  scrollbar-color: var(--green-600) transparent;
 }
 
 .cardHeader {

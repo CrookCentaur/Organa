@@ -5,7 +5,7 @@ import { IconUpload, IconCamera, IconLeaf, IconClose, IconSearch, IconRefresh, I
 import styles from './ImageCapture.module.css';
 
 interface ImageCaptureProps {
-  onIdentify: (imageData: string, mimeType: string) => void;
+  onIdentify: (file: File, previewUrl: string) => void;
   isLoading: boolean;
 }
 
@@ -15,9 +15,9 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export default function ImageCapture({ onIdentify, isLoading }: ImageCaptureProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
-  const [mimeType, setMimeType] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileRef = useRef<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,14 +34,12 @@ export default function ImageCapture({ onIdentify, isLoading }: ImageCaptureProp
       return;
     }
 
+    fileRef.current = file;
     setFileName(file.name);
-    setMimeType(file.type);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setPreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+    // Use object URL for fast, lightweight preview (no base64 needed)
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
   }, []);
 
   const handleDragOver = useCallback((e: DragEvent) => {
@@ -67,19 +65,20 @@ export default function ImageCapture({ onIdentify, isLoading }: ImageCaptureProp
   }, [processFile]);
 
   const handleRemove = useCallback(() => {
+    if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
     setFileName('');
-    setMimeType('');
+    fileRef.current = null;
     setError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
-  }, []);
+  }, [preview]);
 
   const handleIdentify = useCallback(() => {
-    if (preview && mimeType) {
-      onIdentify(preview, mimeType);
+    if (fileRef.current && preview) {
+      onIdentify(fileRef.current, preview);
     }
-  }, [preview, mimeType, onIdentify]);
+  }, [preview, onIdentify]);
 
   if (isLoading) {
     return (
